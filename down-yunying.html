@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>管理文档</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+		<link rel="stylesheet" type="text/css" href="css/list.css"/>
+		<style type="text/css">
+			.choose-line {
+			    padding-left: 30px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="headerpage"></div>
+		<div class="content clearfix">
+			<div class="index-left fl"></div>
+			<div class="cont-right fr">
+				<div class="choose-box">
+					<div class="choose-line">
+						<span class="choose-tit">全部：</span>
+						<ul class="choose-list2 choose-kc">
+						</ul>
+					</div>
+				</div>
+				<div class="word-box">
+					<ul>
+						
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footerpage"></div>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/right.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				/*公共部分
+				 * 导航栏
+				 * footer CopyRight
+				 */
+				$(".headerpage").load("header.html");
+				$(".index-left").load("index-left.html");
+				$(".footerpage").load("footer.html");
+				getKc();
+				wordJx();
+			});
+		</script>
+		<script type="text/javascript">
+			var subjectId = '';
+			var chapterId = '';
+			function wordJx(){
+				var tkn = getCookie(tk);
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/mgrDocument',
+					data: {
+						subjectId:subjectId,
+						chl:'运营'
+					},
+					dataType:"json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					success:function(result){
+						if(result != "" && result.code == 200){
+							var listNew = result.data;
+							$('.word-box ul').html('');
+							var ulList = '';
+							for(var i in listNew){
+								if('运营' == listNew[i].chl){
+									ulList +=
+									'<li><a href="down-list.html?Mid='+ listNew[i].id +'">'+ listNew[i].chapterName +'</a></li>'
+								}
+								$('.word-box ul').append(ulList)
+							}
+						}
+					}
+				})
+			};
+			function getKc(){
+				var tkn = getCookie(tk);
+				var json = {
+					subjectId:subjectId,
+					chapterId:chapterId,
+				}
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/subjects',
+					data: {},
+					dataType:"json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					success:function(result){
+						if(result != "" && result.code == 200){
+							$('.list7').addClass('active');
+							var listNew = result.data;
+							for (var i in listNew){
+								var kc = '<li onclick="postKc(this,'+listNew[i].id+')">'+listNew[i].subjectName+'</li>';
+								$('.choose-kc').append(kc);
+							}
+						}
+					}
+				})
+			};
+			function postKc(thiz,myUse){
+				$('.choose-jb').html('');
+				subjectId = myUse;
+				var tkn = getCookie(tk);
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/mgrDocument',
+					data: {
+						subjectId:subjectId,
+						chl:'运营'
+					},
+					dataType:"json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					success:function(result){
+						if(result != "" && result.code == 200){
+							var listNew = result.data;
+							$(thiz).addClass('on').siblings().removeClass('on');
+							$('.word-box ul').html('');
+							var ulList = '';
+							for(var i in listNew){
+								if('运营' == listNew[i].chl){
+									ulList +=
+									'<li><a href="down-list.html?Mid='+ listNew[i].id +'">'+ listNew[i].chapterName +'</a></li>'
+								}
+								$('.word-box ul').append(ulList)
+							}
+						}
+					}
+				})
+			}
+		</script>
+	</body>
+</html>

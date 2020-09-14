@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>课程</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+		<link rel="stylesheet" type="text/css" href="css/list.css"/>
+	</head>
+	<body>
+		<div class="headerpage"></div>
+		<div class="content clearfix">
+			<div class="index-left fl"></div>
+			<div class="cont-right fr">
+				<div class="bk-top px-top clearfix">
+					<img src="img/login-bg.png" >
+					<div class="fl px-top">
+						<p>运营课程</p>
+						<span class="pxTop-name">主讲人：<i>两个黄鹂</i></span>
+						<span class="pxTop-time">更新时间：<i>2018.10.10 至 2020.02.18</i></span>
+					</div>
+				</div>
+				<div class="px-cont">
+					<ul class="px-type">
+						<li class="on">课程安排</li>
+						<li>课程介绍</li>
+						<li>讲师介绍</li>
+					</ul>
+					<div class="px-list show">
+						<ul class="px-ul">
+							<li>
+								<p>关键期口才第三版一级1</p>
+								<a href="peixun-details.html">查看</a>
+							</li>
+							<li>
+								<p>关键期口才第三版一级2</p>
+								<a href="peixun-details.html">查看</a>
+							</li>
+						</ul>
+					</div>
+					<div class="px-list">
+						
+					</div>
+					<div class="px-list">
+						
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footerpage"></div>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/right.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				/*公共部分
+				 * 导航栏
+				 * footer CopyRight
+				 */
+				$(".headerpage").load("header.html");
+				$(".index-left").load("index-left.html");
+				$(".footerpage").load("footer.html");
+			});
+			$('.px-type li').click(function(){
+				$(this).addClass('on').siblings().removeClass('on');
+				$('.px-list').eq($(this).index()).addClass('show').siblings().removeClass('show');
+			})
+		</script>
+		<!-- <script type="text/javascript">
+			(function($) {
+			   $.getUrlParam = function(name) {
+			      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			      var r = window.location.search.substr(1).match(reg);
+			      if (r != null) return unescape(r[2]);
+			      return null;
+			   }
+			})(jQuery);
+			$(function(){
+				$.ajax({
+					type:'GET',
+					url: path + '/linA/getnews',
+					data: {
+						id:$.getUrlParam('id')
+					},
+					dataType:"json",
+					success:function(result){
+						if(result != "" && result.code == 1){
+							$('.list3').addClass('active');
+							var listNew = result.data;
+						}else{
+							alert(result.msg)
+						}
+					}
+				})
+			})
+		</script> -->
+	</body>
+</html>

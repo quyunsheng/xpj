@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>下载</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+		<link rel="stylesheet" type="text/css" href="css/list.css"/>
+	</head>
+	<body>
+		<div class="headerpage"></div>
+		<div class="content clearfix">
+			<div class="index-left fl"></div>
+			<div class="cont-right fr">
+				<div class="list-cont">
+					<div class="list-top">
+						下载目录
+					</div>
+					<ul class="list-zj">
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="footerpage"></div>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/right.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var tkn = getCookie(tk);
+			$(function(){
+				/*公共部分
+				 * 导航栏
+				 * footer CopyRight
+				 */
+				$(".headerpage").load("header.html");
+				$(".index-left").load("index-left.html");
+				$(".footerpage").load("footer.html");
+			});
+			function lookHt(cId){
+				window.location.href= wordPath+"?objName="+cId
+			}
+		</script>
+		<script type="text/javascript">
+			(function($) {
+			   $.getUrlParam = function(name) {
+			      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+			      var r = window.location.search.substr(1).match(reg);
+			      if (r != null) return unescape(r[2]);
+			      return null;
+			   }
+			})(jQuery);
+			$(function(){
+				var tkn = getCookie(tk);
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/getCourse',
+					data: {
+						chapterId: $.getUrlParam('Mid')
+					},
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					dataType:"json",
+					success:function(result){
+						if(result != "" && result.code == 200){
+							var listNew = result.data;
+							$('.list-top').html(listNew[0].chapterName );
+							for (var i in listNew){
+								var kcList = 
+									'<li><p>'+ listNew[i].courseName +'</p>'+
+									// '<a  href="'+downPath+listNew[i].packages +'" download="" onclick="lookHt(\''+listNew[i].packages +'\')">下载</a></li>';
+									'<a  href="'+downPath+listNew[i].packages +'" download="'+listNew[i].packages +'">下载</a></li>';
+									// '<a href="'+ wordPath + listNew[i].packages +'" download="'+ listNew[i].courseName +'">下载</a></li>';
+								$('.list-zj').append(kcList);
+							}
+						}
+					}
+				})
+			})
+		</script>
+	</body>
+</html>

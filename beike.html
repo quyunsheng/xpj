@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>备课</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+	</head>
+	<body>
+		<div class="headerpage"></div>
+		<div class="content clearfix">
+			<div class="index-left fl"></div>
+			<div class="cont-right fr">
+				<div class="choose-box">
+					<div class="choose-line hidden">
+						<span class="choose-tit">课程体系:</span>
+						<ul class="choose-list1">
+							<li class="on">类别一</li>
+							<li>类别一</li>
+							<li>类别一</li>
+						</ul>
+					</div>
+					<div class="choose-line">
+						<span class="choose-tit">课程:</span>
+						<ul class="choose-list2 choose-kc">
+						
+						</ul>
+					</div>
+					<div class="choose-line choose-jbbox">
+						<span class="choose-tit">课程级别:</span>
+						<ul class="choose-list2 choose-jb">
+						</ul>
+					</div>
+					<div class="choose-line hidden">
+						<span class="choose-tit">学期:</span>
+						<ul class="choose-list2">
+							<li class="on">类别二</li>
+							<li>类别二</li>
+							<li>类别二</li>
+						</ul>
+					</div>
+				</div>
+				<div class="show-type">
+					<span class="choose-tit">排序方式:</span>
+					<ul class="choose-list2">
+						<li id="duration" onclick="getPx(this)">时间</li>
+						<li id="createTime" onclick="getPx(this)">最新</li>
+						<li id="hit" onclick="getPx(this)">最热</li>
+					</ul>
+				</div>
+				<div class="show-curse clearfix">
+					
+				</div>
+			</div>
+		</div>
+		<div class="footerpage"></div>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/right.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				/*公共部分
+				 * 导航栏
+				 * footer CopyRight
+				 */
+				$(".headerpage").load("header.html");
+				$(".index-left").load("index-left.html");
+				$(".footerpage").load("footer.html");
+				getKc();
+				getJb();
+				getBk();
+			});
+		</script>
+		<script type="text/javascript">
+			var subjectId = '';
+			var chapterId = '';
+			var sort = '';
+			function getKc(){
+				var tkn = getCookie(tk);
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/subjects',
+					data: {},
+					dataType:"json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					success:function(result){
+						if(result != "" && result.code == 200){
+							var listNew = result.data;
+							for (var i in listNew){
+								var kc = '<li onclick="postKc(this,'+listNew[i].id+')">'+listNew[i].subjectName+'</li>';
+								$('.choose-kc').append(kc);
+							}
+						}
+					}
+				})
+			};
+			function getJb(){
+				var tkn = getCookie(tk);
+				var json = {
+					subjectId:subjectId
+				}
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/chapters',
+					data: json,
+					dataType:"json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					success:function(result){
+						if(result != "" && result.code == 200){
+							var listNew = result.data;
+							console.log(result)
+							for (var i in listNew){
+								var kc = '<li id="'+listNew[i].id+'" onclick="postJb(this,'+listNew[i].id+')">'+listNew[i].chapterName+'</li>';
+								$('.choose-jb').append(kc);
+							}
+						}
+					}
+				})
+			};
+			function getBk(){
+				var tkn = getCookie(tk);
+				var json = {
+					subjectId:subjectId,
+					chapterId:chapterId,
+					sort:sort
+				}
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/getCourse',
+					data: json,
+					dataType:"json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					success:function(result){
+						if(result != "" && result.code == 200){
+							$('.show-curse').html('');
+							var listNew = result.data;
+							for (var i in listNew){
+								var bkList = 
+								'<div class="curse-list"><a href="beike-details.html?id='+ listNew[i].id +'">'+
+								'<img src="'+photoPath+listNew[i].logo+'" ><div class="curse-btm"><div class="curseBtm-top clearfix">'+
+								'<span>'+ listNew[i].courseName +'</span><i>'+ listNew[i].lastUpdateTime.split(' ')[0] +'</i></div>'+
+								'<p>'+ listNew[i].summary +'</p></div></a></div>';
+								$('.show-curse').append(bkList);
+							}
+						}
+					}
+				})
+			};
+			function postKc(thiz,myUse){
+				$('.choose-jbbox').show()
+				$(thiz).addClass('on').siblings().removeClass('on');
+				$('.choose-jb').html('');
+				subjectId = myUse;
+				getJb();
+				getBk();
+			}
+			function postJb(thiz,myUse){
+				$(thiz).addClass('on').siblings().removeClass('on');
+				chapterId = myUse;
+				getBk();
+			}
+			// 排序
+			function getPx(thiz){
+				var mySort = $(thiz).attr('id');
+				console.log(mySort)
+				$(thiz).addClass('on').siblings().removeClass('on');
+				sort = mySort;
+				getBk();
+			}
+		</script>
+	</body>
+</html>

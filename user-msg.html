@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>基本信息</title>
+		<link rel="stylesheet" type="text/css" href="css/reset.css"/>
+		<link rel="stylesheet" type="text/css" href="css/all.css"/>
+		<link rel="stylesheet" type="text/css" href="css/list.css"/>
+	</head>
+	<body>
+		<div class="headerpage"></div>
+		<div class="content clearfix">
+			<div class="index-left fl"></div>
+			<div class="cont-right fr">
+				<div class="user-box">
+					<p class="userRight-tit"><img src="img/infor.png" >基本信息</p>
+					<table class="user-table">
+						<thead>
+							<tr>
+								<th>加盟学校</th>
+								<th>地址</th>
+								<th>真实姓名</th>
+								<th>电话</th>
+							</tr>
+						</thead>
+						
+						
+					</table>
+				</div>
+			</div>
+		</div>
+		<div class="footerpage"></div>
+		<script src="js/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/right.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			$(function(){
+				/*公共部分
+				 * 导航栏
+				 * footer CopyRight
+				 */
+				$(".headerpage").load("header.html");
+				$(".index-left").load("index-left.html");
+				$(".footerpage").load("footer.html");
+			});
+			$(function(){
+				var tkn = getCookie(tk);
+				$.ajax({
+					type:'GET',
+					url: path + '/web/auth/baseInfo',
+					data: {},
+					dataType:"json",
+					beforeSend: function(XMLHttpRequest) {
+						XMLHttpRequest.setRequestHeader("token", tkn);
+					},
+					success:function(result){
+						if(result != "" && result.code == 200){
+							console.log(result)
+							var listNew = result.data;
+							// for (var i in listNew){
+								var bkList = 
+								'<tbody><tr><td>'+ listNew.schoolName +'</td><td>'+ listNew.address  +'</td>'+
+								'<td>'+ listNew.realName +'</td><td>'+ listNew.telephone  +'</td>'+
+								'<tr><td>授权课程</td><td colspan="3">'
+								 for (var i in listNew.distList){
+									 bkList +=
+										listNew.distList[i].courseName + '&nbsp;&nbsp;'  
+								 }
+								 bkList +=
+								'</td></tr></tbody>';
+								$('.user-table').append(bkList);
+							// }
+						}
+					}
+				})
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,56 @@
+<div class="footer-box">
+	<div class="footer clearfix">
+		<div class="fl" style="width: 442px;">
+			<img class="footer-img" src="img/logo3.png">
+			<div class="footer-mge clearfix">
+				<span class="fl">苏ICP18016190号</span>
+				<span class="fr">网站建设：中企动力 无锡</span>
+			</div>
+		</div>
+		<div class="fr footer-code clearfix">
+			<div class="code-list fl">
+				<img src="img/wx.png">
+				<p>官方微信</p>
+			</div>
+			<div class="code-list fl">
+				<img src="img/gw.png">
+				<p>手机官网</p>
+			</div>
+		</div>
+	</div>
+</div>
+<script src="js/tools.js" type="text/javascript" charset="utf-8"></script>
+<script src="js/right.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	$(function () {
+	    var tkn = getCookie(tk);
+	    if (!isEmpty(tkn)) {
+	        $.ajax({
+	            url: path + '/web/auth/userMsg',
+	            type: 'GET',
+	            beforeSend: function (XMLHttpRequest) {
+	                XMLHttpRequest.setRequestHeader("token", tkn);
+	            },
+	            data: {},
+	            dataType: 'json', //后台返回的数据类型是json文本
+	            success: function (result) {
+	                if (result != "" && result.code == 200) {
+	                    var btnType = result.data;
+						// var imgUrl = photoPath + btnType.logo;
+	                    $('.userName').html(btnType.userName);
+						$('.head-right img').attr('src',photoPath + btnType.logo)
+						if(btnType.userRoles == 1){
+							$('.list6').remove();
+						}
+	                }else if(result.code == 401){
+						window.location.href='./login.html';
+					}
+	            }
+	        })
+	    }
+	});
+	function logout() {
+	    delCookie(tk);
+	    window.location.href = 'login.html';
+	}
+</script>
